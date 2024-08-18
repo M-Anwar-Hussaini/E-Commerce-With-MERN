@@ -8,6 +8,8 @@ import connectToDatabase from "./config/dbConnect.js";
 dotenv.config({ path: "./config/config.env" });
 const app = express();
 
+app.use(express.json());
+
 // Defining the routes:
 app.use("/api/v1", productRoutes);
 

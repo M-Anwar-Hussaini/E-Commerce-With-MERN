@@ -7,7 +7,8 @@
   "scripts": {
     "start": "SET NODE_ENV=DEVELOPMENT& nodemon app.js",
     "dev": "SET NODE_ENV=DEVELOPMENT& nodemon app.js",
-    "prod": "SET NODE_ENV=PRODUCTION& nodemon app.js"
+    "prod": "SET NODE_ENV=PRODUCTION& nodemon app.js",
+    "seeder": "node seeder/seeder.js"
   },
   "author": "Anwar Hussaini & Hafizullah Rasa",
   "license": "MIT",
