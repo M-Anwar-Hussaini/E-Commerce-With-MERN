@@ -1,9 +1,12 @@
 import Product from "../models/productModel.js";
 
 // Create new product => /api/v1/products
-export const getProducts = (req, res) => {
+export const getProducts = async (req, res) => {
+
+  const products = await Product.find();
+
   res.status(200).json({
-    message: "All products",
+    products,
   });
 };
 
