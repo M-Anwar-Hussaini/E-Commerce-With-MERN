@@ -1,10 +1,13 @@
 {
   "name": "e-commerce-api",
   "version": "1.0.0",
+  "type": "module",
   "description": "",
   "main": "app.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "start": "SET NODE_ENV=DEVELOPMENT& nodemon app.js",
+    "dev": "SET NODE_ENV=DEVELOPMENT& nodemon app.js",
+    "prod": "SET NODE_ENV=PRODUCTION& nodemon app.js"
   },
   "author": "Anwar Hussaini & Hafizullah Rasa",
   "license": "MIT",
@@ -16,6 +19,7 @@
   "devDependencies": {
     "@eslint/js": "^9.9.0",
     "eslint": "^9.9.0",
-    "globals": "^15.9.0"
+    "globals": "^15.9.0",
+    "nodemon": "^3.1.4"
   }
 }
