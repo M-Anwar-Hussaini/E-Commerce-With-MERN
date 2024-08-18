@@ -1,12 +1,22 @@
 import express from "express";
 import dotenv from "dotenv";
 import process from "process";
+import productRoutes from "./routes/productRoutes.js";
+import connectToDatabase from "./config/dbConnect.js";
 
+// Intial configurations
 dotenv.config({ path: "./config/config.env" });
 const app = express();
 
+// Defining the routes:
+app.use("/api/v1", productRoutes);
+
+// Running the application
 app.listen(process.env.PORT, () => {
+  connectToDatabase();
   console.log(
     `Server is running on port ${process.env.PORT} in ${process.env.NODE_ENV} mode.`,
   );
 });
+
+export default app;
