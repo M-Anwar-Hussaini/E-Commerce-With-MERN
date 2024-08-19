@@ -1,18 +1,27 @@
 import process from 'process';
+import ErrorHandler from '../utils/errorHandler.js';
 
 export default (err, req, res, next) => {
   let error = {
-    statusCode: err.statusCode || 500,
-    message: err.message || 'Internal Server Error',
+    statusCode: err?.statusCode || 500,
+    message: err?.message || 'Internal Server Error',
   };
 
+  // Handle invalid mongoose ID
+  if (err?.name === 'CastError') {
+    const message = `Resource not found. Invalid ${err?.path}`;
+    error = new ErrorHandler(message, 404);
+  }
+
   if (process.env.NODE_ENV === 'DEVELOPMENT') {
+    // Handle the errors in the development environment
     return res.status(error.statusCode).json({
       message: error.message,
       error: err,
       stack: err?.stack,
     });
   }
+  // Handle the errors in the production environment
   if (process.env.NODE_ENV === 'PRODUCTION') {
     return res.status(error.statusCode).json({
       message: error.message,
