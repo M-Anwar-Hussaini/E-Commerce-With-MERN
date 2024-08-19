@@ -18,11 +18,21 @@ app.use('/api/v1', productRoutes);
 app.use(errorMiddleware);
 
 // Running the application
-app.listen(process.env.PORT, () => {
+const server = app.listen(process.env.PORT, () => {
   connectToDatabase();
   console.log(
     `Server is running on port ${process.env.PORT} in ${process.env.NODE_ENV} mode.`,
   );
 });
 
+// Handle Unhandled Promise Rejection Error
+process.on('unhandledRejection', (err) => {
+  console.log(`ERROR: ${err}`);
+  console.log(
+    'Shutting down the server due to the Unhandled Promise Rejection',
+  );
+  server.close(() => {
+    process.exit(1);
+  });
+});
 export default app;
