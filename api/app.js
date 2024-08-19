@@ -3,6 +3,7 @@ import dotenv from "dotenv";
 import process from "process";
 import productRoutes from "./routes/productRoutes.js";
 import connectToDatabase from "./config/dbConnect.js";
+import errorMiddleware from "./middlewares/errors.js";
 
 // Intial configurations
 dotenv.config({ path: "./config/config.env" });
@@ -12,6 +13,9 @@ app.use(express.json());
 
 // Defining the routes:
 app.use("/api/v1", productRoutes);
+
+// Middleware to handle errors
+app.use(errorMiddleware);
 
 // Running the application
 app.listen(process.env.PORT, () => {
