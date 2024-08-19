@@ -5,9 +5,18 @@ import productRoutes from './routes/productRoutes.js';
 import connectToDatabase from './config/dbConnect.js';
 import errorMiddleware from './middlewares/errors.js';
 
+// Hanlde the uncaught exception errors
+process.on('uncaughtException', (err) => {
+  console.log(`ERROR: ${err}`);
+  console.log('Shutting down the server due to uncaught exception');
+  process.exit(1);
+});
+
 // Intial configurations
 dotenv.config({ path: './config/config.env' });
 const app = express();
+
+// console.log(undefinedVariable);  => Test the uncaughtException error handler
 
 app.use(express.json());
 
