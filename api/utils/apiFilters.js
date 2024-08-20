@@ -22,7 +22,7 @@ class APIFilters {
     const queryCopy = { ...this.queryString };
 
     // Removing fields from the query
-    const fieldsToRemove = ["keyword"];
+    const fieldsToRemove = ["keyword", "page"];
     fieldsToRemove.forEach((el) => delete queryCopy[el]);
 
     // Advance filter for price, ratings etc
@@ -33,6 +33,14 @@ class APIFilters {
     );
 
     this.query = this.query.find(JSON.parse(queryString));
+    return this;
+  }
+
+  pagination(resPerPage) {
+    const currentPage = Number(this.queryString.page) || 1;
+    const skip = resPerPage * (currentPage - 1);
+
+    this.query = this.query.limit(resPerPage).skip(skip);
     return this;
   }
 }
