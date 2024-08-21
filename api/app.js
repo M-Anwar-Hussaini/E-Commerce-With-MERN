@@ -4,6 +4,7 @@ import process from 'process';
 import productRoutes from './routes/productRoutes.js';
 import connectToDatabase from './config/dbConnect.js';
 import errorMiddleware from './middlewares/errors.js';
+import authRoutes from './routes/authRoutes.js';
 
 // Hanlde the uncaught exception errors
 process.on('uncaughtException', (err) => {
@@ -20,8 +21,10 @@ const app = express();
 
 app.use(express.json());
 
+
 // Defining the routes:
 app.use('/api/v1', productRoutes);
+app.use('/api/v1', authRoutes);
 
 // Middleware to handle errors
 app.use(errorMiddleware);
