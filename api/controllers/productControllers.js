@@ -23,7 +23,7 @@ export const getProducts = catchcAsync(async (req, res) => {
 
 // Cretae new product => /api/v1/admin/products
 export const newProduct = catchcAsync(async (req, res) => {
-  const product = await Product.create(req.body);
+  const product = await Product.create({ ...req.body, user: req.user._id });
   res.status(201).json({
     product,
   });
