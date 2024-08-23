@@ -3,6 +3,7 @@ import User from "../models/userModel.js";
 import ErrorHandler from "../utils/errorHandler.js";
 import sendToken from "../utils/sendToken.js";
 
+// Login user => post: /api/v1/login
 export const loginUser = catchAsyncErrors(async (req, res, next) => {
   const { email, password } = req.body;
   if (!email || !password) {
@@ -21,6 +22,7 @@ export const loginUser = catchAsyncErrors(async (req, res, next) => {
   sendToken(user, 201, res);
 });
 
+// Register new user => post: /api/v1/register
 export const registerUser = catchAsyncErrors(async (req, res) => {
   const { name, email, password } = req.body;
 
@@ -30,4 +32,15 @@ export const registerUser = catchAsyncErrors(async (req, res) => {
     password,
   });
   sendToken(user, 201, res);
+});
+
+// Logout current user => post: /api/v1/logout
+export const logout = catchAsyncErrors(async (req, res) => {
+  res.cookie("ACCESS_TOKEN", null, {
+    expires: new Date(Date.now()),
+    httpOnly: true,
+  });
+  return res.status(200).json({
+    message: "Logged out",
+  });
 });
