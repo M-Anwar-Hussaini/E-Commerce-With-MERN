@@ -6,10 +6,11 @@ import {
   updateProduct,
   deleteProduct,
 } from "../controllers/productControllers.js";
+import { isAuthenticatedUser } from "../middlewares/auth.js";
 
 const router = express.Router();
 
-router.route("/products").get(getProducts);
+router.route("/products").get(isAuthenticatedUser, getProducts);
 router
   .route("/products/:id")
   .get(getProductDetails)
