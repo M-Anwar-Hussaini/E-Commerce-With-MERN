@@ -7,20 +7,19 @@ import {
   deleteProduct,
 } from "../controllers/productControllers.js";
 import { authorizeRoles, isAuthenticatedUser } from "../middlewares/auth.js";
-import { isAdmin } from "../middlewares/admin.js";
 
 const router = express.Router();
 
-router
-  .route("/products")
-  .get(isAuthenticatedUser, authorizeRoles("admin"), getProducts);
+router.route("/products").get(getProducts);
 
 router.route("/products/:id").get(getProductDetails);
 router
   .route("/admin/products/:id")
-  .put(isAuthenticatedUser, updateProduct)
-  .delete(isAuthenticatedUser, deleteProduct);
+  .put(isAuthenticatedUser, authorizeRoles("admin"), updateProduct)
+  .delete(isAuthenticatedUser, authorizeRoles("admin"), deleteProduct);
 
-router.route("/admin/products").post(isAuthenticatedUser, isAdmin, newProduct);
+router
+  .route("/admin/products")
+  .post(isAuthenticatedUser, authorizeRoles("admin"), newProduct);
 
 export default router;
