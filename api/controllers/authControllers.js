@@ -24,12 +24,13 @@ export const loginUser = catchAsyncErrors(async (req, res, next) => {
 
 // Register new user => post: /api/v1/register
 export const registerUser = catchAsyncErrors(async (req, res) => {
-  const { name, email, password } = req.body;
+  const { name, email, password, role } = req.body;
 
   const user = await User.create({
     name,
     email,
     password,
+    role,
   });
   sendToken(user, 201, res);
 });
