@@ -1,7 +1,10 @@
 import catchAsyncErrors from "../middlewares/catchAsyncErrors.js";
 import User from "../models/userModel.js";
+import { getResetPasswordTemplate } from "../utils/emailtemplates.js";
 import ErrorHandler from "../utils/errorHandler.js";
+import sendEmail from "../utils/sendEmail.js";
 import sendToken from "../utils/sendToken.js";
+import process from "process";
 
 // Login user => post: /api/v1/login
 export const loginUser = catchAsyncErrors(async (req, res, next) => {
@@ -44,4 +47,38 @@ export const logout = catchAsyncErrors(async (req, res) => {
   return res.status(200).json({
     message: "Logged out",
   });
+});
+
+// Forget password => post: /api/v1/password/forget
+export const forgetPassword = catchAsyncErrors(async (req, res, next) => {
+  // Search for user
+  const user = await User.findOne({ email: req?.body?.email });
+  if (!user) {
+    return next(new ErrorHandler("User not found with this email.", 404));
+  }
+
+  // Get reset password token
+  const resetToken = await user?.getResetPasswordToken();
+  await user.save();
+
+  // Create reset password url
+  // TODO: The url will be changed later when working with react
+  const resetUrl = `${process.env.FRONTEND_URL}/api/v1/password/reset/${resetToken}`;
+  const message = getResetPasswordTemplate(user?.name, resetUrl);
+
+  try {
+    await sendEmail({
+      email: user.email,
+      subject: "ShopIT Password Recovery",
+      message,
+    });
+    res.status(200).json({
+      message: `Email sent to ${user.email}`,
+    });
+  } catch (error) {
+    user.resetPasswordToken = undefined;
+    user.resetPasswordExpire = undefined;
+    await user.save();
+    return next(new ErrorHandler(error?.message, 500));
+  }
 });
