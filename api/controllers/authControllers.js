@@ -138,3 +138,20 @@ export const getUserProfile = catchAsyncErrors(async (req, res) => {
     user,
   });
 });
+
+// Update user details => PUT: /api/v1/me/update
+export const updateProfile = catchAsyncErrors(async (req, res) => {
+  const newUserData = {
+    name: req.body?.name,
+    email: req.body?.email,
+  };
+
+  const user = await User.findByIdAndUpdate(
+    req?.user._id,
+    { ...newUserData },
+    { new: true },
+  );
+  res.status(200).json({
+    user,
+  });
+});
