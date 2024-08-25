@@ -28,7 +28,7 @@ export const newOrder = catchAsyncErrors(async (req, res, next) => {
     user: req.user._id,
   });
 
-  res.status(200).json({
+  res.status(201).json({
     order,
   });
 });
@@ -38,6 +38,7 @@ export const myOrders = catchAsyncErrors(async (req, res) => {
   const orders = await Order.find({ user: req.user._id });
 
   res.status(200).json({
+    result: orders.length,
     orders,
   });
 });
@@ -46,7 +47,7 @@ export const myOrders = catchAsyncErrors(async (req, res) => {
 export const getOrderDetails = catchAsyncErrors(async (req, res, next) => {
   const order = await Order.findById(req.params.id).populate(
     "user",
-    "name email"
+    "name email",
   );
 
   if (!order) {
@@ -63,6 +64,7 @@ export const allOrders = catchAsyncErrors(async (req, res) => {
   const orders = await Order.find();
 
   res.status(200).json({
+    result: orders.length,
     orders,
   });
 });
@@ -89,7 +91,7 @@ export const updateOrder = catchAsyncErrors(async (req, res, next) => {
     await product.save({ validateBeforeSave: false });
   });
 
-  order.orderStatus = req.body.status;
+  order.orderStatus = req.body.orderStatus;
   order.deliveredAt = Date.now();
 
   await order.save();
