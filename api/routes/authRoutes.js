@@ -1,5 +1,6 @@
 import express from "express";
 import {
+  deleteUser,
   forgetPassword,
   getAllUsers,
   getUserDetails,
@@ -10,6 +11,7 @@ import {
   resetPassword,
   updatePassword,
   updateProfile,
+  updateUser,
 } from "../controllers/authControllers.js";
 import { authorizeRoles, isAuthenticatedUser } from "../middlewares/auth.js";
 const router = express.Router();
@@ -30,6 +32,8 @@ router
   .get(isAuthenticatedUser, authorizeRoles("admin"), getAllUsers);
 router
   .route("/admin/users/:id")
-  .get(isAuthenticatedUser, authorizeRoles("admin"), getUserDetails);
+  .get(isAuthenticatedUser, authorizeRoles("admin"), getUserDetails)
+  .put(isAuthenticatedUser, authorizeRoles("admin"), updateUser)
+  .delete(isAuthenticatedUser, authorizeRoles("admin"), deleteUser);
 
 export default router;
