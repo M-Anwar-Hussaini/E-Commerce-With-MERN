@@ -1,6 +1,12 @@
+import Footer from "./components/layouts/Footer";
+import Header from "./components/layouts/Header";
+
 function App() {
   return (
-    <h1 className="p-5 text-center font-bold text-3xl font-serif">Shop IT</h1>
+    <div className="App">
+      <Header />
+      <Footer />
+    </div>
   );
 }
 
