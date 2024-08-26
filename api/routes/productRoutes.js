@@ -5,6 +5,8 @@ import {
   getProductDetails,
   updateProduct,
   deleteProduct,
+  createProductReview,
+  getProductReviews,
 } from "../controllers/productControllers.js";
 import { authorizeRoles, isAuthenticatedUser } from "../middlewares/auth.js";
 
@@ -21,5 +23,9 @@ router
 router
   .route("/admin/products")
   .post(isAuthenticatedUser, authorizeRoles("admin"), newProduct);
+
+router.route("/reviews")
+.put(isAuthenticatedUser, createProductReview)
+.get(isAuthenticatedUser, getProductReviews);
 
 export default router;
