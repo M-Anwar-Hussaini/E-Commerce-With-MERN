@@ -1,10 +1,20 @@
 import MetaData from "./layouts/MetaData";
 import { useGetProductsQuery } from "../redux/api/productsApi";
 import ProductItem from "./product/ProductItem";
+import Loader from "./layouts/Loader";
+import toast from "react-hot-toast";
+import { useEffect } from "react";
 
 const Home = () => {
-  const { data, isLoading } = useGetProductsQuery();
-  console.log(data, isLoading);
+  const { data, isLoading, error, isError } = useGetProductsQuery();
+
+  useEffect(() => {
+    if (isError) {
+      toast.error(error?.data?.message);
+    }
+  }, [isError, error]);
+  
+  if (isLoading) return <Loader/ >
 
   return (
     <>
