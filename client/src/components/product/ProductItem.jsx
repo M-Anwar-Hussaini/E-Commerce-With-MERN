@@ -29,7 +29,7 @@ export default function ProductItem({ product }) {
             </span>
           </div>
           <p className="card-text mt-2">${product?.price}</p>
-          <Link href="" id="view_btn" className="btn btn-block">
+          <Link to={`/products/${product?._id}`} id="view_btn" className="btn btn-block">
             View Details
           </Link>
         </div>
