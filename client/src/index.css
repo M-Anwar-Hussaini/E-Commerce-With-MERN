@@ -533,8 +533,12 @@ footer {
 }
 
 #filter_form .row .col {
-  padding-left: 5px;
-  padding-right: 5px;
+  padding-left: 2px;
+  padding-right: 2px;
+}
+
+#filter_form .row .col input {
+  width: 80px;
 }
 
 #filter_form button {
