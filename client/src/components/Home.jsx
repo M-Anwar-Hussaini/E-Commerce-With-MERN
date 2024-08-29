@@ -14,9 +14,12 @@ const Home = () => {
   const keyword = searchParams.get("keyword") || "";
   const min = searchParams.get("min");
   const max = searchParams.get("max");
+  const category = searchParams.get("category");
+
   const params = { page, keyword };
   min !== null && (params.min = min);
   max !== null && (params.max = max);
+  category !== null && (params.category = category);
   const { data, isLoading, error, isError } = useGetProductsQuery(params);
 
   useEffect(() => {
@@ -49,7 +52,7 @@ const Home = () => {
               {data?.products?.map((product) => (
                 <ProductItem
                   product={product}
-                  key={product?.id}
+                  key={product?._id}
                   columnSize={columnSize}
                 />
               ))}
