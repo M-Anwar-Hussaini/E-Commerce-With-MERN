@@ -4,17 +4,22 @@ import ProductItem from "./product/ProductItem";
 import Loader from "./layouts/Loader";
 import toast from "react-hot-toast";
 import { useEffect } from "react";
+import CustomPagination from "./layouts/CustomPagination";
+import { useSearchParams } from "react-router-dom";
 
 const Home = () => {
-  const { data, isLoading, error, isError } = useGetProductsQuery();
+  let [searchParams] = useSearchParams();
+  const page = searchParams.get("page") || 1;
+  const params = { page };
+  const { data, isLoading, error, isError } = useGetProductsQuery(params);
 
   useEffect(() => {
     if (isError) {
       toast.error(error?.data?.message);
     }
   }, [isError, error]);
-  
-  if (isLoading) return <Loader/ >
+
+  if (isLoading) return <Loader />;
 
   return (
     <>
@@ -32,6 +37,10 @@ const Home = () => {
               ))}
             </div>
           </section>
+          <CustomPagination
+            resPerPage={data?.resPerPage}
+            filteredProductsCount={data?.filteredProductsCount}
+          />
         </div>
       </div>
     </>
