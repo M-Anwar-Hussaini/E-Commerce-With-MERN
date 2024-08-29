@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import { useNavigate, useSearchParams } from "react-router-dom";
 import { getPriceQueryParams } from "../../helpers/helper";
 import { PRODUCT_CATEGORIES } from "../../constants/constant";
+import StarRatings from "react-star-ratings";
 
 export default function Filters() {
   // Hooks
@@ -32,16 +33,16 @@ export default function Filters() {
     });
     if (checkbox.checked) {
       // Delete
-      if (searchParams.has("category")) {
-        searchParams.set("category", checkbox.value);
+      if (searchParams.has(checkbox.name)) {
+        searchParams.set(checkbox.name, checkbox.value);
       } else {
-        searchParams.append("category", checkbox.value);
+        searchParams.append(checkbox.name, checkbox.value);
       }
       const path = `${window.location.pathname}?${searchParams.toString()}`;
       navigate(path);
     } else {
-      if (searchParams.has("category")) {
-        searchParams.delete("category");
+      if (searchParams.has(checkbox.name)) {
+        searchParams.delete(checkbox.name);
         const path = `${window.location.pathname}?${searchParams.toString()}`;
         navigate(path);
       }
@@ -114,31 +115,29 @@ export default function Filters() {
       ))}
       <hr />
       <h5 className="mb-3">Ratings</h5>
-
-      <div className="form-check">
-        <input
-          className="form-check-input"
-          type="checkbox"
-          name="ratings"
-          id="check7"
-          value="5"
-        />
-        <label className="form-check-label" htmlFor="check7">
-          <span className="star-rating">★ ★ ★ ★ ★</span>
-        </label>
-      </div>
-      <div className="form-check">
-        <input
-          className="form-check-input"
-          type="checkbox"
-          name="ratings"
-          id="check8"
-          value="4"
-        />
-        <label className="form-check-label" htmlFor="check8">
-          <span className="star-rating">★ ★ ★ ★ ☆</span>
-        </label>
-      </div>
+      {[5, 4, 3, 2, 1].map((rating) => (
+        <div className="form-check" key={rating}>
+          <input
+            className="form-check-input"
+            type="checkbox"
+            name="ratings"
+            id={`rating${rating}`}
+            value={rating}
+            defaultChecked={handleDefaultChecked("ratings", "" + rating)}
+            onChange={(e) => handleCategory(e.target)}
+          />
+          <label className="form-check-label" htmlFor={`rating${rating}`}>
+            <StarRatings
+              rating={rating}
+              starRatedColor="#ffb829"
+              numberOfStars={5}
+              name="rating"
+              starDimension="21px"
+              starSpacing="1px"
+            />
+          </label>
+        </div>
+      ))}
     </div>
   );
 }
