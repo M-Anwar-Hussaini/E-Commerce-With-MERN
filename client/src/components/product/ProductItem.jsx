@@ -2,9 +2,9 @@ import PropTypes from "prop-types"; // ES6
 import { Link } from "react-router-dom";
 import StarRatings from "react-star-ratings";
 
-export default function ProductItem({ product }) {
+export default function ProductItem({ product, columnSize }) {
   return (
-    <div className="col-sm-12 col-md-6 col-lg-3 my-3">
+    <div className={`col-sm-12 col-md-6 col-lg-${columnSize} my-3`}>
       <div className="card p-3 rounded">
         <img
           className="card-img-top mx-auto"
@@ -29,7 +29,11 @@ export default function ProductItem({ product }) {
             </span>
           </div>
           <p className="card-text mt-2">${product?.price}</p>
-          <Link to={`/products/${product?._id}`} id="view_btn" className="btn btn-block">
+          <Link
+            to={`/products/${product?._id}`}
+            id="view_btn"
+            className="btn btn-block"
+          >
             View Details
           </Link>
         </div>
@@ -40,4 +44,5 @@ export default function ProductItem({ product }) {
 
 ProductItem.propTypes = {
   product: PropTypes.object,
+  columnSize: PropTypes.number,
 };
