@@ -1,15 +1,20 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useNavigate, useSearchParams } from "react-router-dom";
 import { getPriceQueryParams } from "../../helpers/helper";
+import { PRODUCT_CATEGORIES } from "../../constants/constant";
 
 export default function Filters() {
   // Hooks
-  const [min, setMin] = useState(0);
-  const [max, setMax] = useState(0);
+  const [min, setMin] = useState(null);
+  const [max, setMax] = useState(null);
   const navigate = useNavigate();
   let [searchParams] = useSearchParams();
+  useEffect(() => {
+    searchParams.has("min") && setMin(searchParams.get("min"));
+    searchParams.has("max") && setMax(searchParams.get("max"));
+  }, []);
 
-  // Handlers
+  // Handle Price filter
   const handleFilter = (e) => {
     e.preventDefault();
     searchParams = getPriceQueryParams(searchParams, "min", min);
@@ -18,6 +23,36 @@ export default function Filters() {
     navigate(path);
   };
 
+  // Handle Categories
+  const handleCategory = (checkbox) => {
+    const checkboxes = document.getElementsByName(checkbox.name);
+    console.log(checkboxes);
+    checkboxes.forEach((item) => {
+      if (item !== checkbox) item.checked = false;
+    });
+    if (checkbox.checked) {
+      // Delete
+      if (searchParams.has("category")) {
+        searchParams.set("category", checkbox.value);
+      } else {
+        searchParams.append("category", checkbox.value);
+      }
+      const path = `${window.location.pathname}?${searchParams.toString()}`;
+      navigate(path);
+    } else {
+      if (searchParams.has("category")) {
+        searchParams.delete("category");
+        const path = `${window.location.pathname}?${searchParams.toString()}`;
+        navigate(path);
+      }
+    }
+  };
+
+  const handleDefaultChecked = (checkBoxType, checkBoxValue) => {
+    const value = searchParams.get(checkBoxType);
+    if (checkBoxValue === value) return true;
+    return false;
+  };
   return (
     <div className="border p-3 filter">
       <h3>Filters</h3>
@@ -61,33 +96,22 @@ export default function Filters() {
       <hr />
       <h5 className="mb-3">Category</h5>
 
-      <div className="form-check">
-        <input
-          className="form-check-input"
-          type="checkbox"
-          name="category"
-          id="check4"
-          value="Category 1"
-        />
-        <label className="form-check-label" htmlFor="check4">
-          {" "}
-          Category 1{" "}
-        </label>
-      </div>
-      <div className="form-check">
-        <input
-          className="form-check-input"
-          type="checkbox"
-          name="category"
-          id="check5"
-          value="Category 2"
-        />
-        <label className="form-check-label" htmlFor="check5">
-          {" "}
-          Category 2{" "}
-        </label>
-      </div>
-
+      {PRODUCT_CATEGORIES.map((category) => (
+        <div className="form-check" key={category}>
+          <input
+            className="form-check-input"
+            type="checkbox"
+            name="category"
+            id={category}
+            value={category}
+            defaultChecked={handleDefaultChecked("category", category)}
+            onChange={(e) => handleCategory(e.target)}
+          />
+          <label className="form-check-label" htmlFor={category}>
+            {category}
+          </label>
+        </div>
+      ))}
       <hr />
       <h5 className="mb-3">Ratings</h5>
 
