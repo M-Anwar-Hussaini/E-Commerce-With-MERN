@@ -132,7 +132,6 @@ export const updatePassword = catchAsyncErrors(async (req, res, next) => {
 
 // Get current user profile => GET: /api/v1/me
 export const getUserProfile = catchAsyncErrors(async (req, res) => {
-  console.log(req.user);
   const user = await User.findById(req?.user._id);
   res.status(200).json({
     user,

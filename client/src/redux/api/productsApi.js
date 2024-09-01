@@ -24,5 +24,5 @@ export const productApi = createApi({
     }),
   }),
 });
-
+export default productApi;
 export const { useGetProductsQuery, useGetProductDetailsQuery } = productApi;
