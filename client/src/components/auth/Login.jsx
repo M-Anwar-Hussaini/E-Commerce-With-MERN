@@ -1,18 +1,26 @@
 import { useEffect, useState } from "react";
 import { useLoginMutation } from "../../redux/api/authApi";
 import toast from "react-hot-toast";
+import { useNavigate } from "react-router-dom";
+import { useSelector } from "react-redux";
+import Loader from "../layouts/Loader";
 
 const Login = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const { isAuthenticated } = useSelector((store) => store.auth);
+  const navigate = useNavigate();
 
-  const [login, { isLoading, error, data }] = useLoginMutation();
+  const [login, { isLoading, error }] = useLoginMutation();
 
   useEffect(() => {
+    if (isAuthenticated) {
+      navigate("/");
+    }
     if (error) {
       toast.error(error?.data?.message);
     }
-  }, [error]);
+  }, [error, isAuthenticated]);
 
   const submitHandler = (e) => {
     e.preventDefault();
@@ -21,9 +29,11 @@ const Login = () => {
       email,
       password,
     };
-
     login(loginData);
   };
+  if (isLoading) {
+    return <Loader />;
+  }
 
   return (
     <div className="row wrapper">
