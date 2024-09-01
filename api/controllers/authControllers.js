@@ -6,7 +6,7 @@ import sendEmail from "../utils/sendEmail.js";
 import sendToken from "../utils/sendToken.js";
 import process from "process";
 import crypto from "crypto";
-import { upload_file } from "../utils/cloudinary.js";
+import { delete_file, upload_file } from "../utils/cloudinary.js";
 
 // Login user => post: /api/v1/login
 export const loginUser = catchAsyncErrors(async (req, res, next) => {
@@ -46,6 +46,10 @@ export const uploadAvatar = catchAsyncErrors(async (req, res) => {
     req.body.avatar,
     "e-commerce-mern/avatars",
   );
+
+  if (req?.user?.avatar?.url) {
+    await delete_file(req?.user?.avatar?.public_id);
+  }
 
   const user = await User.findByIdAndUpdate(
     req?.user?._id,
@@ -223,6 +227,9 @@ export const deleteUser = catchAsyncErrors(async (req, res, next) => {
   }
 
   // TODO: Remove user avatar from cloudinary
+  if (req?.user?.avatar?.url) {
+    await delete_file(req?.user?.avatar?.public_id);
+  }
   await User.findByIdAndDelete(req.params?.id);
   res.status(200).json({
     message: "User deleted successfully",
