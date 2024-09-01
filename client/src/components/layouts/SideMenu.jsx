@@ -10,17 +10,17 @@ const SideBar = () => {
     },
     {
       name: "Update Profile",
-      url: "/me/update-profile",
+      url: "/me/update_profile",
       icon: "fas fa-user-edit",
     },
     {
       name: "Upload Avatar",
-      url: "/me/update-avatar",
+      url: "/me/update_avatar",
       icon: "fas fa-user-circle",
     },
     {
       name: "Update Password",
-      url: "/me/update-password",
+      url: "/me/update_password",
       icon: "fas fa-lock",
     },
   ];
