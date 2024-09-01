@@ -1,6 +1,10 @@
+import { useGetMeQuery } from "../../redux/api/userApi";
 import Search from "./Search";
 
 export default function Header() {
+  const { data } = useGetMeQuery();
+  console.log(data);
+
   return (
     <nav className="navbar row">
       <div className="col-12 col-md-3 ps-5">
