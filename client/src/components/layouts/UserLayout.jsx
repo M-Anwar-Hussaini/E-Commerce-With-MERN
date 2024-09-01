@@ -1,4 +1,5 @@
 import SideMenu from "./SideMenu";
+import PropTypes from "prop-types";
 
 const UserLayout = ({ children }) => {
   return (
@@ -17,6 +18,10 @@ const UserLayout = ({ children }) => {
       </div>
     </div>
   );
+};
+
+UserLayout.propTypes = {
+  children: PropTypes.node,
 };
 
 export default UserLayout;
