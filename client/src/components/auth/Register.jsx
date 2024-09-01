@@ -1,23 +1,28 @@
 import { useState, useEffect } from "react";
 import { useRegisterMutation } from "../../redux/api/authApi";
 import toast from "react-hot-toast";
+import { useSelector } from "react-redux";
+import { useNavigate } from "react-router-dom";
 
 const Register = () => {
+  const { isAuthenticated } = useSelector((store) => store.auth);
+  const navigate = useNavigate();
   const [user, setUser] = useState({
     name: "",
     email: "",
     password: "",
   });
-
   const { name, email, password } = user;
-
-  const [register, { isLoading, error, data }] = useRegisterMutation();
+  const [register, { isLoading, error }] = useRegisterMutation();
 
   useEffect(() => {
+    if (isAuthenticated) {
+      navigate("/");
+    }
     if (error) {
       toast.error(error?.data?.message);
     }
-  }, [error]);
+  }, [error, isAuthenticated]);
 
   const onChange = (e) => {
     setUser({ ...user, [e.target.name]: e.target.value });
