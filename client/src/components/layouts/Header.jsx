@@ -1,11 +1,20 @@
 import { useSelector } from "react-redux";
 import { useGetMeQuery } from "../../redux/api/userApi";
 import Search from "./Search";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
+import { useLazyLogoutQuery } from "../../redux/api/authApi";
 
 export default function Header() {
+  const navigate = useNavigate();
+
   const { isLoading } = useGetMeQuery();
   const { user } = useSelector((store) => store.auth);
+  const [logout] = useLazyLogoutQuery();
+
+  const handleLogout = () => {
+    logout();
+    navigate(0);
+  };
 
   return (
     <nav className="navbar row">
@@ -64,7 +73,11 @@ export default function Header() {
                 Profile
               </Link>
 
-              <Link className="dropdown-item text-danger" to="/">
+              <Link
+                className="dropdown-item text-danger"
+                to="/"
+                onClick={handleLogout}
+              >
                 Logout
               </Link>
             </div>
