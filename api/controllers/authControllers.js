@@ -6,6 +6,7 @@ import sendEmail from "../utils/sendEmail.js";
 import sendToken from "../utils/sendToken.js";
 import process from "process";
 import crypto from "crypto";
+import { upload_file } from "../utils/cloudinary.js";
 
 // Login user => post: /api/v1/login
 export const loginUser = catchAsyncErrors(async (req, res, next) => {
@@ -37,6 +38,28 @@ export const registerUser = catchAsyncErrors(async (req, res) => {
     role,
   });
   sendToken(user, 201, res);
+});
+
+// Upload user avatar=> post: /api/v1/me/upload_avatar
+export const uploadAvatar = catchAsyncErrors(async (req, res) => {
+  const cloadniaryResponse = await upload_file(
+    req.body.avatar,
+    "e-commerce-mern/avatars",
+  );
+
+  const user = await User.findByIdAndUpdate(
+    req?.user?._id,
+    {
+      avatar: {
+        url: cloadniaryResponse.url,
+        public_id: cloadniaryResponse.public_id,
+      },
+    },
+    { new: true },
+  );
+  return res.status(200).json({
+    user,
+  });
 });
 
 // Logout current user => post: /api/v1/logout
@@ -115,7 +138,6 @@ export const resetPassword = catchAsyncErrors(async (req, res, next) => {
 
 // Update password => PUT: /api/v1/password/update
 export const updatePassword = catchAsyncErrors(async (req, res, next) => {
-  console.log(req.user);
   const user = await User.findById(req?.user._id).select("+password");
 
   // Compare the password
