@@ -1,9 +1,11 @@
+import { useSelector } from "react-redux";
 import { useGetMeQuery } from "../../redux/api/userApi";
 import Search from "./Search";
+import { Link } from "react-router-dom";
 
 export default function Header() {
-  const { data } = useGetMeQuery();
-  console.log(data);
+  const { isLoading } = useGetMeQuery();
+  const { user } = useSelector((store) => store.auth);
 
   return (
     <nav className="navbar row">
@@ -28,48 +30,52 @@ export default function Header() {
           </span>
         </a>
 
-        <div className="ms-4 dropdown">
-          <button
-            className="btn dropdown-toggle text-white"
-            type="button"
-            id="dropDownMenuButton"
-            data-bs-toggle="dropdown"
-            aria-expanded="false"
-          >
-            <figure className="avatar avatar-nav">
-              <img
-                src="../images/default_avatar.jpg"
-                alt="User Avatar"
-                className="rounded-circle"
-              />
-            </figure>
-            <span>User</span>
-          </button>
-          <div
-            className="dropdown-menu w-100"
-            aria-labelledby="dropDownMenuButton"
-          >
-            <a className="dropdown-item" href="/admin/dashboard">
-              Dashboard
-            </a>
+        {user ? (
+          <div className="ms-4 dropdown">
+            <button
+              className="btn dropdown-toggle text-white"
+              type="button"
+              id="dropDownMenuButton"
+              data-bs-toggle="dropdown"
+              aria-expanded="false"
+            >
+              <figure className="avatar avatar-nav">
+                <img
+                  src={user?.avater || "../images/default_avatar.jpg"}
+                  alt="User Avatar"
+                  className="rounded-circle"
+                />
+              </figure>
+              <span>{user?.name}</span>
+            </button>
+            <div
+              className="dropdown-menu w-100"
+              aria-labelledby="dropDownMenuButton"
+            >
+              <Link className="dropdown-item" to="/admin/dashboard">
+                Dashboard
+              </Link>
 
-            <a className="dropdown-item" href="/me/orders">
-              Orders
-            </a>
+              <Link className="dropdown-item" to="/me/orders">
+                Orders
+              </Link>
 
-            <a className="dropdown-item" href="/me/profile">
-              Profile
-            </a>
+              <Link className="dropdown-item" to="/me/profile">
+                Profile
+              </Link>
 
-            <a className="dropdown-item text-danger" href="/">
-              Logout
-            </a>
+              <Link className="dropdown-item text-danger" to="/">
+                Logout
+              </Link>
+            </div>
           </div>
-        </div>
-
-        <a href="/login" className="btn ms-4" id="login_btn">
-          Login
-        </a>
+        ) : (
+          !isLoading && (
+            <Link to="/login" className="btn ms-4" id="login_btn">
+              Login
+            </Link>
+          )
+        )}
       </div>
     </nav>
   );
