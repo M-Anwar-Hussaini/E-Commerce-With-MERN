@@ -4,6 +4,8 @@ import { useEffect, useState } from "react";
 import toast from "react-hot-toast";
 import Loader from "../layouts/Loader";
 import StarRatings from "react-star-ratings";
+import { useDispatch } from "react-redux";
+import { setCartItem } from "../../redux/features/cartSlice";
 
 const ProductDetails = () => {
   const [activeImg, setActiveImg] = useState("");
@@ -12,6 +14,8 @@ const ProductDetails = () => {
   const { data, isLoading, error, isError } = useGetProductDetailsQuery(
     params?.id,
   );
+
+  const dispatch = useDispatch();
   const product = data?.product;
 
   useEffect(() => {
@@ -30,6 +34,19 @@ const ProductDetails = () => {
       toast.error(error?.data?.message);
     }
   }, [isError]);
+
+  const handleAddCart = () => {
+    const cardItem = {
+      product: product?._id,
+      name: product?.name,
+      price: product?.price,
+      image: product?.images[0]?.url,
+      stock: product?.stock,
+      quantity,
+    };
+    dispatch(setCartItem(cardItem));
+    toast.success("Atem added to cart successfully");
+  };
 
   if (isLoading) return <Loader />;
 
@@ -92,9 +109,7 @@ const ProductDetails = () => {
           <div className="stockCounter d-inline">
             <span
               className="btn btn-danger minus"
-              onClick={
-                quantity > 0 && (() => setQuantity((e) => Number(e) - 1))
-              }
+              onClick={() => quantity > 0 && setQuantity((e) => Number(e) - 1)}
             >
               -
             </span>
@@ -106,9 +121,8 @@ const ProductDetails = () => {
             />
             <span
               className="btn btn-primary plus"
-              onClick={
-                quantity < product?.stock &&
-                (() => setQuantity((e) => Number(e) + 1))
+              onClick={() =>
+                quantity < product?.stock && setQuantity((e) => Number(e) + 1)
               }
             >
               +
@@ -118,7 +132,8 @@ const ProductDetails = () => {
             type="button"
             id="cart_btn"
             className="btn btn-primary d-inline ms-4"
-            disabled=""
+            disabled={product?.stock <= 0}
+            onClick={handleAddCart}
           >
             Add to Cart
           </button>
