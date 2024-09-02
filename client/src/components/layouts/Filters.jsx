@@ -27,7 +27,6 @@ export default function Filters() {
   // Handle Categories
   const handleCategory = (checkbox) => {
     const checkboxes = document.getElementsByName(checkbox.name);
-    console.log(checkboxes);
     checkboxes.forEach((item) => {
       if (item !== checkbox) item.checked = false;
     });

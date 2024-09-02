@@ -12,6 +12,7 @@ import {
   updatePassword,
   updateProfile,
   updateUser,
+  uploadAvatar,
 } from "../controllers/authControllers.js";
 import { authorizeRoles, isAuthenticatedUser } from "../middlewares/auth.js";
 const router = express.Router();
@@ -25,6 +26,7 @@ router.route("/password/reset/:token").put(resetPassword);
 router.route("/password/update").put(isAuthenticatedUser, updatePassword);
 
 router.route("/me").get(isAuthenticatedUser, getUserProfile);
+router.route("/me/upload_avatar").put(isAuthenticatedUser, uploadAvatar);
 router.route("/me/update").put(isAuthenticatedUser, updateProfile);
 
 router
