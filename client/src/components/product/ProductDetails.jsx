@@ -6,21 +6,23 @@ import Loader from "../layouts/Loader";
 import StarRatings from "react-star-ratings";
 
 const ProductDetails = () => {
+  const [activeImg, setActiveImg] = useState("");
+  const [quantity, setQuantity] = useState(1);
   const params = useParams();
-
   const { data, isLoading, error, isError } = useGetProductDetailsQuery(
-    params?.id
+    params?.id,
   );
   const product = data?.product;
-
-  const [activeImg, setActiveImg] = useState("");
 
   useEffect(() => {
     setActiveImg(
       product?.images[0]
         ? product?.images[0]?.url
-        : "/images/default_product.png"
+        : "/images/default_product.png",
     );
+    if (product?.stock === 0) {
+      setQuantity(0);
+    }
   }, [product]);
 
   useEffect(() => {
@@ -50,12 +52,13 @@ const ProductDetails = () => {
                 <a role="button">
                   <img
                     className={`d-block border rounded p-3 cursor-pointer ${
-                        img.url === activeImg ? "border-warning" : ""}`}
+                      img.url === activeImg ? "border-warning" : ""
+                    }`}
                     height="100"
                     width="100"
                     src={img?.url}
                     alt={img?.url}
-                    onClick={(e) => setActiveImg(img.url)}
+                    onClick={() => setActiveImg(img.url)}
                   />
                 </a>
               </div>
@@ -87,14 +90,29 @@ const ProductDetails = () => {
 
           <p id="product_price">${product?.price}</p>
           <div className="stockCounter d-inline">
-            <span className="btn btn-danger minus">-</span>
+            <span
+              className="btn btn-danger minus"
+              onClick={
+                quantity > 0 && (() => setQuantity((e) => Number(e) - 1))
+              }
+            >
+              -
+            </span>
             <input
               type="number"
               className="form-control count d-inline"
-              value="1"
+              value={quantity}
               readOnly
             />
-            <span className="btn btn-primary plus">+</span>
+            <span
+              className="btn btn-primary plus"
+              onClick={
+                quantity < product?.stock &&
+                (() => setQuantity((e) => Number(e) + 1))
+              }
+            >
+              +
+            </span>
           </div>
           <button
             type="button"
