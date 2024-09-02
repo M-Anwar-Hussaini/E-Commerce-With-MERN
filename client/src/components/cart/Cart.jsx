@@ -26,7 +26,6 @@ export default function Cart() {
       stock: item?.stock,
       quantity: newQuantity,
     };
-    console.log(cardItem);
     dispatch(setCartItem(cardItem));
   };
 
@@ -115,11 +114,22 @@ export default function Cart() {
                 <hr />
                 <p>
                   Subtotal:{" "}
-                  <span className="order-summary-values">8 (Units)</span>
+                  <span className="order-summary-values">
+                    {cartItems?.reduce((acc, item) => acc + item?.quantity, 0)}{" "}
+                    (Units)
+                  </span>
                 </p>
                 <p>
                   Est. total:{" "}
-                  <span className="order-summary-values">$1499.97</span>
+                  <span className="order-summary-values">
+                    $
+                    {cartItems
+                      ?.reduce(
+                        (acc, item) => acc + item?.price * item?.quantity,
+                        0,
+                      )
+                      .toFixed(2)}
+                  </span>
                 </p>
                 <hr />
                 <button id="checkout_btn" className="btn btn-primary w-100">
