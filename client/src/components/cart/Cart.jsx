@@ -1,7 +1,7 @@
 import { Link } from "react-router-dom";
 import MetaData from "../layouts/MetaData";
 import { useDispatch, useSelector } from "react-redux";
-import { setCartItem } from "../../redux/features/cartSlice";
+import { setCartItem, deleteCartItem } from "../../redux/features/cartSlice";
 export default function Cart() {
   const { cartItems } = useSelector((store) => store.cart);
   const dispatch = useDispatch();
@@ -95,6 +95,9 @@ export default function Cart() {
                           <i
                             id="delete_cart_item"
                             className="fa fa-trash btn btn-danger"
+                            onClick={() =>
+                              dispatch(deleteCartItem(item.product))
+                            }
                           ></i>
                         </div>
                       </div>
