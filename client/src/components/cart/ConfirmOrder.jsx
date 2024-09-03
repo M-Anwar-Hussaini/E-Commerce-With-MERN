@@ -1,7 +1,7 @@
 import MetaData from "../layouts/MetaData";
 import { useSelector } from "react-redux";
 import { Link } from "react-router-dom";
-import { caluclateOrderCost } from "../../helpers/helper";
+import { calculateOrderCost } from "../../helpers/helper";
 import CheckoutSteps from "./CheckoutSteps";
 
 const ConfirmOrder = () => {
@@ -9,7 +9,7 @@ const ConfirmOrder = () => {
   const { user } = useSelector((state) => state.auth);
 
   const { itemsPrice, shippingPrice, taxPrice, totalPrice } =
-    caluclateOrderCost(cartItems);
+  calculateOrderCost(cartItems);
 
   return (
     <>
