@@ -1,10 +1,11 @@
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import MetaData from "../layouts/MetaData";
 import { useDispatch, useSelector } from "react-redux";
 import { setCartItem, deleteCartItem } from "../../redux/features/cartSlice";
 export default function Cart() {
   const { cartItems } = useSelector((store) => store.cart);
   const dispatch = useDispatch();
+  const navigate = useNavigate();
 
   const increaseQuantity = (item, quantity) => {
     const newQuantity = quantity + 1;
@@ -27,6 +28,10 @@ export default function Cart() {
       quantity: newQuantity,
     };
     dispatch(setCartItem(cardItem));
+  };
+
+  const checkoutHandler = () => {
+    navigate("/shipping");
   };
 
   return (
@@ -126,13 +131,17 @@ export default function Cart() {
                     {cartItems
                       ?.reduce(
                         (acc, item) => acc + item?.price * item?.quantity,
-                        0,
+                        0
                       )
                       .toFixed(2)}
                   </span>
                 </p>
                 <hr />
-                <button id="checkout_btn" className="btn btn-primary w-100">
+                <button
+                  id="checkout_btn"
+                  className="btn btn-primary w-100"
+                  onClick={checkoutHandler}
+                >
                   Check out
                 </button>
               </div>
