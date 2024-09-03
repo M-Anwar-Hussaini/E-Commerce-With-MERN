@@ -9,6 +9,7 @@ export default function Header() {
 
   const { isLoading } = useGetMeQuery();
   const { user } = useSelector((store) => store.auth);
+  const { cartItems } = useSelector((store) => store.cart);
   const [logout] = useLazyLogoutQuery();
 
   const handleLogout = () => {
@@ -20,24 +21,23 @@ export default function Header() {
     <nav className="navbar row">
       <div className="col-12 col-md-3 ps-5">
         <div className="navbar-brand">
-          <a href="/">
+          <Link to="/">
             <img src="/images/shopit_logo.png" alt="ShopIT Logo" />
-          </a>
+          </Link>
         </div>
       </div>
       <div className="col-12 col-md-5 mt-2 mt-md-0">
         <Search />
       </div>
       <div className="col-12 col-md-4 mt-4 mt-md-0 text-center">
-        <a href="/cart" style={{ textDecoration: "none" }}>
+        <Link to="/cart" style={{ textDecoration: "none" }}>
           <span id="cart" className="ms-3">
-            {" "}
-            Cart{" "}
+            Cart
           </span>
           <span className="ms-1" id="cart_count">
-            0
+            {cartItems?.length || 0}
           </span>
-        </a>
+        </Link>
 
         {user ? (
           <div className="ms-4 dropdown">
@@ -50,7 +50,7 @@ export default function Header() {
             >
               <figure className="avatar avatar-nav">
                 <img
-                  src={user?.avater || "../images/default_avatar.jpg"}
+                  src={user?.avatar?.url || "../images/default_avatar.jpg"}
                   alt="User Avatar"
                   className="rounded-circle"
                 />
