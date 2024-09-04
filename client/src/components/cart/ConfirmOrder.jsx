@@ -3,13 +3,14 @@ import { useSelector } from "react-redux";
 import { Link } from "react-router-dom";
 import { calculateOrderCost } from "../../helpers/helper";
 import CheckoutSteps from "./CheckoutSteps";
+import React from "react";
 
 const ConfirmOrder = () => {
   const { cartItems, shippingInfo } = useSelector((state) => state.cart);
   const { user } = useSelector((state) => state.auth);
 
   const { itemsPrice, shippingPrice, taxPrice, totalPrice } =
-  calculateOrderCost(cartItems);
+    calculateOrderCost(cartItems);
 
   return (
     <>
@@ -33,7 +34,7 @@ const ConfirmOrder = () => {
           <h4 className="mt-4">Your Cart Items:</h4>
 
           {cartItems?.map((item) => (
-            <>
+            <React.Fragment key={item?.product}>
               <hr />
               <div className="cart-item my-1">
                 <div className="row">
@@ -59,7 +60,7 @@ const ConfirmOrder = () => {
                 </div>
               </div>
               <hr />
-            </>
+            </React.Fragment>
           ))}
         </div>
 
