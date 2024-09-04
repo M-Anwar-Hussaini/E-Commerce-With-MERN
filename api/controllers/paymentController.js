@@ -42,8 +42,6 @@ export const stripeCheckoutSession = catchAsyn(async (req, res) => {
     })),
   });
 
-  console.log(session);
-
   res.status(200).json({
     url: session.url,
   });
