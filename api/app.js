@@ -7,6 +7,7 @@ import errorMiddleware from "./middlewares/errors.js";
 import authRoutes from "./routes/authRoutes.js";
 import cookieParser from "cookie-parser";
 import orderRoutes from "./routes/orderRoutes.js";
+import paymentRoutes from "./routes/paymentRoute.js";
 
 // Hanlde the uncaught exception errors
 process.on("uncaughtException", (err) => {
@@ -25,6 +26,7 @@ app.use(cookieParser());
 app.use("/api/v1", productRoutes);
 app.use("/api/v1", authRoutes);
 app.use("/api/v1", orderRoutes);
+app.use("/api/v1", paymentRoutes);
 
 // Middleware to handle errors
 app.use(errorMiddleware);
