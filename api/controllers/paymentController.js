@@ -127,7 +127,6 @@ const getOrderItems = async (line_items) => {
 
       // Resolve the promise with the cartItems
       resolve(cartItems);
-      console.log("Successfully retrieved all cart items.");
     } catch (error) {
       console.log("Error retrieving cart items", error);
       reject(error);
