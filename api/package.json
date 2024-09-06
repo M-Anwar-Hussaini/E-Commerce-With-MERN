@@ -20,7 +20,8 @@
     "express": "^4.19.2",
     "jsonwebtoken": "^9.0.2",
     "mongoose": "^8.5.3",
-    "nodemailer": "^6.9.14"
+    "nodemailer": "^6.9.14",
+    "stripe": "^16.9.0"
   },
   "devDependencies": {
     "@eslint/js": "^9.9.0",

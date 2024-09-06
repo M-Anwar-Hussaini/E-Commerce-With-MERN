@@ -7,6 +7,7 @@ import errorMiddleware from "./middlewares/errors.js";
 import authRoutes from "./routes/authRoutes.js";
 import cookieParser from "cookie-parser";
 import orderRoutes from "./routes/orderRoutes.js";
+import paymentRoutes from "./routes/paymentRoute.js";
 
 // Hanlde the uncaught exception errors
 process.on("uncaughtException", (err) => {
@@ -18,13 +19,21 @@ process.on("uncaughtException", (err) => {
 // Intial configurations
 dotenv.config({ path: "./config/config.env" });
 const app = express();
-app.use(express.json({ limit: "10mb" }));
+app.use(
+  express.json({
+    limit: "10mb",
+    verify: (req, res, buf) => {
+      req.rawBody = buf.toString();
+    },
+  }),
+);
 app.use(cookieParser());
 
 // Defining the routes:
 app.use("/api/v1", productRoutes);
 app.use("/api/v1", authRoutes);
 app.use("/api/v1", orderRoutes);
+app.use("/api/v1", paymentRoutes);
 
 // Middleware to handle errors
 app.use(errorMiddleware);
