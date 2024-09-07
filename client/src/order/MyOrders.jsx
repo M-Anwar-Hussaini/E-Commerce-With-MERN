@@ -3,16 +3,30 @@ import { useMyOrdersQuery } from "../redux/api/orderApi";
 import { toast } from "react-toastify";
 import Loader from "../components/layouts/Loader";
 import { MDBDataTable } from "mdbreact";
-import { Link } from "react-router-dom";
+import { Link, useNavigate, useSearchParams } from "react-router-dom";
+import MetaData from "../components/layouts/MetaData";
+import { useDispatch } from "react-redux";
+import { clearCart } from "../redux/features/cartSlice";
 
 const MyOrders = () => {
   const { data, isLoading, error } = useMyOrdersQuery();
+
+  const [searchParams] = useSearchParams();
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
+
+  const orderSuccess = searchParams.get("order_success");
 
   useEffect(() => {
     if (error) {
       toast.error(error?.data?.message);
     }
-  }, [error]);
+
+    if (orderSuccess) {
+      dispatch(clearCart());
+      navigate("/orders/me");
+    }
+  }, [error, orderSuccess]);
 
   const setOrders = () => {
     const orders = {
@@ -54,10 +68,13 @@ const MyOrders = () => {
         orderStatus: order?.orderStatus,
         actions: (
           <>
-            <Link to={`orders/me/${order?._id}`} className="btn btn-primary">
+            <Link to={`/order/${order._id}`} className="btn btn-primary">
               <i className="fa fa-eye"></i>
             </Link>
-            <Link to={`orders/invoice/${order?._id}`} className="btn btn-success ms-2">
+            <Link
+              to={`orders/invoice/${order?._id}`}
+              className="btn btn-success ms-2"
+            >
               <i className="fa fa-print"></i>
             </Link>
           </>
@@ -72,6 +89,7 @@ const MyOrders = () => {
 
   return (
     <div>
+      <MetaData title={"My Orders"} />
       <h1 className="my-5">{data?.orders?.length} Orders</h1>
 
       <MDBDataTable
