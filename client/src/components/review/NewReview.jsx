@@ -1,6 +1,9 @@
 import { useEffect, useState } from "react";
 import StarRatings from "react-star-ratings";
-import { useSubmitReviewMutation } from "../../redux/api/productsApi";
+import {
+  useCanUserReviewQuery,
+  useSubmitReviewMutation,
+} from "../../redux/api/productsApi";
 import toast from "react-hot-toast";
 
 const NewReview = ({ productId }) => {
@@ -10,31 +13,38 @@ const NewReview = ({ productId }) => {
   const [submitReview, { isLoading, error, isSuccess }] =
     useSubmitReviewMutation();
 
-    useEffect(() => {
-        if (error) {
-            toast.error(error?.data?.message);
-        }
+  const { data } = useCanUserReviewQuery(productId);
+  const canReview = data?.canReview;
 
-        if (isSuccess) {
-            toast.success("Review submitted successfully");
-        }
-    }, [error]);
+  useEffect(() => {
+    if (error) {
+      toast.error(error?.data?.message);
+    }
+
+    if (isSuccess) {
+      toast.success("Review submitted successfully");
+    }
+  }, [error, isSuccess]);
 
   const submitHandler = () => {
     const reviewData = { rating, comment, productId };
     submitReview(reviewData);
   };
+
   return (
     <div>
-      <button
-        id="review_btn"
-        type="button"
-        className="btn btn-primary mt-4"
-        data-bs-toggle="modal"
-        data-bs-target="#ratingModal"
-      >
-        Submit Your Review
-      </button>
+      {/* Only show the button if the user can review */}
+      {canReview && (
+        <button
+          id="review_btn"
+          type="button"
+          className="btn btn-primary mt-4"
+          data-bs-toggle="modal"
+          data-bs-target="#ratingModal"
+        >
+          Submit Your Review
+        </button>
+      )}
 
       <div className="row mt-2 mb-5">
         <div className="rating w-50">
