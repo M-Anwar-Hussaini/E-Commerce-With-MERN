@@ -8,6 +8,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { setCartItem } from "../../redux/features/cartSlice";
 import MetaData from "../layouts/MetaData";
 import NewReview from "../review/NewReview";
+import ListReviews from "../review/ListReviews";
 
 const ProductDetails = () => {
   const [activeImg, setActiveImg] = useState("");
@@ -167,7 +168,7 @@ const ProductDetails = () => {
               Sold by: <strong>{product?.seller}</strong>
             </p>
             {isAuthenticated ? (
-              <NewReview productId={product?._id}/>
+              <NewReview productId={product?._id} />
             ) : (
               <div className="alert alert-danger my-5" type="alert">
                 Login to post your review.
@@ -176,6 +177,9 @@ const ProductDetails = () => {
           </div>
         </div>
       </div>
+      {product?.reviews?.length > 0 && (
+        <ListReviews reviews={product?.reviews} />
+      )}
     </>
   );
 };
