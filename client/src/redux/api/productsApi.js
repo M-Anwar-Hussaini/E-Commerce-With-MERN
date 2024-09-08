@@ -3,6 +3,7 @@ import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
 export const productApi = createApi({
   reducerPath: "productApi",
   baseQuery: fetchBaseQuery({ baseUrl: "/api/v1" }),
+  tagTypes: ["Product"], // Ensure tag type is declared
   endpoints: (builder) => ({
     getProducts: builder.query({
       query: (params) => ({
@@ -16,20 +17,38 @@ export const productApi = createApi({
           "ratings[gte]": params.ratings,
         },
       }),
+      providesTags: (result) =>
+        result
+          ? [
+              ...result.products.map(({ id }) => ({ type: "Product", id })),
+              { type: "Product", id: "LIST" },
+            ]
+          : [{ type: "Product", id: "LIST" }],
     }),
     getProductDetails: builder.query({
       query: (id) => ({
         url: `/products/${id}`,
       }),
+      providesTags: (result, error, id) => [{ type: "Product", id }],
     }),
     submitReview: builder.mutation({
-      query(body) {
-        return {
-          url: "/reviews",
-          method: "PUT",
-          body,
-        };
-      },
+      query: (body) => ({
+        url: "/reviews",
+        method: "PUT",
+        body,
+      }),
+      invalidatesTags: (result, error, { productId }) => [
+        { type: "Product", id: productId },
+      ],
+    }),
+    canUserReview: builder.query({
+      query: (productId) => ({
+        url: `/can_review`,
+        params: { productId },
+      }),
+      providesTags: (result, error, productId) => [
+        { type: "Product", id: productId },
+      ],
     }),
   }),
 });
@@ -39,4 +58,5 @@ export const {
   useGetProductsQuery,
   useGetProductDetailsQuery,
   useSubmitReviewMutation,
+  useCanUserReviewQuery,
 } = productApi;
