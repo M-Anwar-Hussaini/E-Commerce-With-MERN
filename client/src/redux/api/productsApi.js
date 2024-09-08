@@ -22,7 +22,21 @@ export const productApi = createApi({
         url: `/products/${id}`,
       }),
     }),
+    submitReview: builder.mutation({
+      query(body) {
+        return {
+          url: "/reviews",
+          method: "PUT",
+          body,
+        };
+      },
+    }),
   }),
 });
+
 export default productApi;
-export const { useGetProductsQuery, useGetProductDetailsQuery } = productApi;
+export const {
+  useGetProductsQuery,
+  useGetProductDetailsQuery,
+  useSubmitReviewMutation,
+} = productApi;
