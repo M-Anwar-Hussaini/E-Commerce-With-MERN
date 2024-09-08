@@ -19,6 +19,7 @@ import ConfirmOrder from "./components/cart/ConfirmOrder";
 import PaymentMethod from "./components/cart/PaymentMethod";
 import MyOrders from "./order/MyOrders";
 import OrderDetails from "./order/OrderDetails";
+import Invoice from "./components/invoice/Invoice";
 
 function App() {
   return (
@@ -105,6 +106,14 @@ function App() {
               element={
                 <ProtectedRoute>
                   <OrderDetails />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="order/invoice/:id"
+              element={
+                <ProtectedRoute>
+                  <Invoice />
                 </ProtectedRoute>
               }
             />
