@@ -65,7 +65,7 @@ export default function Header() {
                 Dashboard
               </Link>
 
-              <Link className="dropdown-item" to="/me/orders">
+              <Link className="dropdown-item" to="/orders/me">
                 Orders
               </Link>
 

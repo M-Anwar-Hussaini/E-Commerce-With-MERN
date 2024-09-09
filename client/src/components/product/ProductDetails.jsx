@@ -4,26 +4,30 @@ import { useEffect, useState } from "react";
 import toast from "react-hot-toast";
 import Loader from "../layouts/Loader";
 import StarRatings from "react-star-ratings";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { setCartItem } from "../../redux/features/cartSlice";
 import MetaData from "../layouts/MetaData";
+import NewReview from "../review/NewReview";
+import ListReviews from "../review/ListReviews";
 
 const ProductDetails = () => {
   const [activeImg, setActiveImg] = useState("");
   const [quantity, setQuantity] = useState(1);
   const params = useParams();
   const { data, isLoading, error, isError } = useGetProductDetailsQuery(
-    params?.id,
+    params?.id
   );
 
   const dispatch = useDispatch();
   const product = data?.product;
 
+  const { isAuthenticated } = useSelector((state) => state.auth);
+
   useEffect(() => {
     setActiveImg(
       product?.images[0]
         ? product?.images[0]?.url
-        : "/images/default_product.png",
+        : "/images/default_product.png"
     );
     if (product?.stock === 0) {
       setQuantity(0);
@@ -163,13 +167,19 @@ const ProductDetails = () => {
             <p id="product_seller mb-3">
               Sold by: <strong>{product?.seller}</strong>
             </p>
-
-            <div className="alert alert-danger my-5" type="alert">
-              Login to post your review.
-            </div>
+            {isAuthenticated ? (
+              <NewReview productId={product?._id} />
+            ) : (
+              <div className="alert alert-danger my-5" type="alert">
+                Login to post your review.
+              </div>
+            )}
           </div>
         </div>
       </div>
+      {product?.reviews?.length > 0 && (
+        <ListReviews reviews={product?.reviews} />
+      )}
     </>
   );
 };
