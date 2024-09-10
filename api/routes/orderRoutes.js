@@ -6,6 +6,7 @@ import {
   allOrders,
   deleteOrder,
   getOrderDetails,
+  getSales,
   myOrders,
   newOrder,
   updateOrder,
@@ -14,6 +15,10 @@ import {
 router.route("/orders").post(isAuthenticatedUser, newOrder);
 router.route("/orders/me").get(isAuthenticatedUser, myOrders);
 router.route("/orders/:id").get(isAuthenticatedUser, getOrderDetails);
+
+router
+  .route("/admin/get_sales")
+  .get(isAuthenticatedUser, authorizeRoles("admin"), getSales);
 
 router
   .route("/admin/orders")
