@@ -1,12 +1,12 @@
 import { useEffect } from "react";
-import { useMyOrdersQuery } from "../redux/api/orderApi";
+import { useMyOrdersQuery } from "../../redux/api/orderApi";
 import { toast } from "react-toastify";
-import Loader from "../components/layouts/Loader";
+import Loader from "../layouts/Loader";
 import { MDBDataTable } from "mdbreact";
 import { Link, useNavigate, useSearchParams } from "react-router-dom";
-import MetaData from "../components/layouts/MetaData";
+import MetaData from "../layouts/MetaData";
 import { useDispatch } from "react-redux";
-import { clearCart } from "../redux/features/cartSlice";
+import { clearCart } from "../../redux/features/cartSlice";
 
 const MyOrders = () => {
   const { data, isLoading, error } = useMyOrdersQuery();
