@@ -1,30 +1,7 @@
 import { useState } from "react";
 import { Link, useLocation } from "react-router-dom";
 
-const SideBar = () => {
-  const menuItem = [
-    {
-      name: "Profile",
-      url: "/me/profile",
-      icon: "fas fa-user",
-    },
-    {
-      name: "Update Profile",
-      url: "/me/update_profile",
-      icon: "fas fa-user-edit",
-    },
-    {
-      name: "Upload Avatar",
-      url: "/me/update_avatar",
-      icon: "fas fa-user-circle",
-    },
-    {
-      name: "Update Password",
-      url: "/me/update_password",
-      icon: "fas fa-lock",
-    },
-  ];
-
+const SideBar = ({ menuItems }) => {
   const location = useLocation();
 
   const [activeMenuItem, setActiveMenuItem] = useState(location.pathname);
@@ -35,7 +12,7 @@ const SideBar = () => {
 
   return (
     <div className="list-group mt-5 pl-4">
-      {menuItem?.map((menuItem, index) => (
+      {menuItems?.map((menuItem, index) => (
         <Link
           key={index}
           to={menuItem.url}
