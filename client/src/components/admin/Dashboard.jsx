@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import AdminLayout from "../layouts/AdminLayout";
 
 import DatePicker from "react-datepicker";
@@ -40,7 +40,7 @@ const Dashboard = () => {
   if (isLoading) return <Loader />;
   return (
     <AdminLayout>
-      <MetaData title={"Admin Products"} />
+      <MetaData title={"Admin Dashboard"} />
       <div className="d-flex justify-content-start align-items-center">
         <div className="mb-3 me-4">
           <label className="form-label d-block">Start Date</label>
