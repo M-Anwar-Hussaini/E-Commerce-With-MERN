@@ -50,6 +50,9 @@ export const productApi = createApi({
         { type: "Product", id: productId },
       ],
     }),
+    getAdminProducts: builder.query({
+      query: () => `/admin/products`,
+    }),
   }),
 });
 
@@ -59,4 +62,5 @@ export const {
   useGetProductDetailsQuery,
   useSubmitReviewMutation,
   useCanUserReviewQuery,
+  useGetAdminProductsQuery,
 } = productApi;
