@@ -44,6 +44,15 @@ export const getProductDetails = catchcAsync(async (req, res, next) => {
   });
 });
 
+// Get Products- ADMIN => /api/v1/admin/products
+export const getAdminProducts = catchcAsync(async (req, res) => {
+  const products = await Product.find();
+
+  res.status(200).json({
+    products,
+  });
+});
+
 // Update product details => /api/v1/products/:id
 export const updateProduct = catchcAsync(async (req, res, next) => {
   let product = await Product.findById(req.params?.id);
