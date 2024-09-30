@@ -3,6 +3,7 @@ import ErrorHandler from "../utils/errorHandler.js";
 import catchcAsync from "../middlewares/catchAsyncErrors.js";
 import APIFilters from "../utils/apiFilters.js";
 import Order from "../models/orderModel.js";
+import {upload_file} from "../utils/cloudinary.js";
 
 // Get all products => /api/v1/products
 export const getProducts = catchcAsync(async (req, res) => {
@@ -63,6 +64,26 @@ export const updateProduct = catchcAsync(async (req, res, next) => {
   product = await Product.findByIdAndUpdate(req.params.id, req.body, {
     new: true,
   });
+  res.status(200).json({
+    product,
+  });
+});
+
+// Upload product images   =>  /api/v1/admin/products/:id/upload_images
+export const uploadProductImages = catchcAsync(async (req, res, next) => {
+  let product = await Product.findById(req?.params?.id);
+
+  if (!product) {
+    return next(new ErrorHandler("Product not found", 404));
+  }
+
+  const uploader = async (image) => upload_file(image, "shopit/products");
+
+  const urls = await Promise.all((req?.body?.images).map(uploader));
+
+  product?.images?.push(...urls);
+  await product?.save();
+
   res.status(200).json({
     product,
   });
