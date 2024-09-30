@@ -1,20 +1,40 @@
 import { useEffect } from "react";
-import { toast } from "react-toastify";
 import Loader from "../layouts/Loader";
+import { toast } from "react-hot-toast";
 import { MDBDataTable } from "mdbreact";
 import { Link } from "react-router-dom";
 import MetaData from "../layouts/MetaData";
-import { useGetAdminProductsQuery } from "../../redux/api/productsApi";
+import {
+  useDeleteProductMutation,
+  useGetAdminProductsQuery,
+} from "../../redux/api/productsApi";
 import AdminLayout from "../layouts/AdminLayout";
 
 const ListProducts = () => {
   const { data, isLoading, error } = useGetAdminProductsQuery();
 
+  const [
+    deleteProduct,
+    { isLoading: isDeleteLoading, error: deleteError, isSuccess },
+  ] = useDeleteProductMutation();
+
   useEffect(() => {
     if (error) {
       toast.error(error?.data?.message);
     }
-  }, [error]);
+
+    if (deleteError) {
+      toast.error(deleteError?.data?.message);
+    }
+
+    if (isSuccess) {
+      toast.success("Product Deleted Successfully");
+    }
+  }, [error, deleteError, isSuccess]);
+
+  const deleteProductHandler = (id) => {
+    deleteProduct(id);
+  };
 
   const setProducts = () => {
     const products = {
@@ -34,6 +54,7 @@ const ListProducts = () => {
           field: "stock",
           sort: "asc",
         },
+
         {
           label: "Actions",
           field: "actions",
@@ -51,19 +72,21 @@ const ListProducts = () => {
         actions: (
           <>
             <Link
-              to={`/admin/products/${product._id}`}
+              to={`/admin/products/${product?._id}`}
               className="btn btn-outline-primary"
             >
               <i className="fa fa-pencil"></i>
             </Link>
             <Link
-              to={`/admin/products/${product._id}/upload_images`}
+              to={`/admin/products/${product?._id}/upload_images`}
               className="btn btn-outline-success ms-2"
             >
               <i className="fa fa-image"></i>
             </Link>
             <button
               className="btn btn-outline-danger ms-2"
+              onClick={() => deleteProductHandler(product?._id)}
+              disabled={isDeleteLoading}
             >
               <i className="fa fa-trash"></i>
             </button>
@@ -80,6 +103,7 @@ const ListProducts = () => {
   return (
     <AdminLayout>
       <MetaData title={"All Products"} />
+
       <h1 className="my-5">{data?.products?.length} Products</h1>
 
       <MDBDataTable
