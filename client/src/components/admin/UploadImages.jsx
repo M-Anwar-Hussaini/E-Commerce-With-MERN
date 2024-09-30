@@ -4,6 +4,7 @@ import AdminLayout from "../layouts/AdminLayout";
 import { useNavigate, useParams } from "react-router-dom";
 import { useEffect, useRef, useState } from "react";
 import {
+  useDeleteProductImageMutation,
   useGetProductDetailsQuery,
   useUploadProductImagesMutation,
 } from "../../redux/api/productsApi";
@@ -20,6 +21,11 @@ const UploadImages = () => {
   const [uploadProductImages, { isLoading, error, isSuccess }] =
     useUploadProductImagesMutation();
 
+    const [
+      deleteProductImage,
+      { isLoading: isDeleteLoading, error: deleteError },
+    ] = useDeleteProductImageMutation();
+
   const { data } = useGetProductDetailsQuery(params?.id);
 
   useEffect(() => {
@@ -31,12 +37,16 @@ const UploadImages = () => {
       toast.error(error.data.message);
     }
 
+    if (deleteError) {
+      toast.error(deleteError?.data?.message);
+    }
+
     if (isSuccess) {
       setImagesPreview([]);
       toast.success("Images uploaded successfully");
       navigate("/admin/products");
     }
-  }, [data, error, isSuccess]);
+  }, [data, error, isSuccess, deleteError]);
 
   const onChange = (e) => {
     const files = Array.from(e.target.files);
@@ -75,6 +85,10 @@ const UploadImages = () => {
     }
 
     uploadProductImages({ id: params?.id, body: { images } });
+  };
+
+  const deleteImage = (imgId) => {
+    deleteProductImage({ id: params?.id, body: { imgId } });
   };
 
   return (
@@ -157,8 +171,9 @@ const UploadImages = () => {
                               borderColor: "#dc3545",
                             }}
                             className="btn btn-block btn-danger cross-button mt-1 py-0"
-                            disabled={true}
                             type="button"
+                            disabled={isLoading || isDeleteLoading}
+                            onClick={() => deleteImage(img?.public_id)}
                           >
                             <i className="fa fa-trash"></i>
                           </button>
@@ -174,7 +189,7 @@ const UploadImages = () => {
               id="register_button"
               type="submit"
               className="btn w-100 py-2"
-              disabled={isLoading}
+              disabled={isLoading || isDeleteLoading}
             >
               {isLoading ? "Uploading..." : "Upload"}
             </button>
