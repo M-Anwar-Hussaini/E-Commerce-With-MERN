@@ -3,7 +3,7 @@ import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
 export const productApi = createApi({
   reducerPath: "productApi",
   baseQuery: fetchBaseQuery({ baseUrl: "/api/v1" }),
-  tagTypes: ["Product"], // Ensure tag type is declared
+  tagTypes: ["Product", "AdminProducts"], // Ensure tag type is declared
   endpoints: (builder) => ({
     getProducts: builder.query({
       query: (params) => ({
@@ -50,6 +50,59 @@ export const productApi = createApi({
         { type: "Product", id: productId },
       ],
     }),
+    getAdminProducts: builder.query({
+      query: () => `/admin/products`,
+      providesTags: ["AdminProducts"],
+    }),
+    createProduct: builder.mutation({
+      query(body) {
+        return {
+          url: "/admin/products",
+          method: "POST",
+          body,
+        };
+      },
+      invalidatesTags: ["AdminProducts"],
+    }),
+    updateProduct: builder.mutation({
+      query({ id, body }) {
+        return {
+          url: `/admin/products/${id}`,
+          method: "PUT",
+          body,
+        };
+      },
+      invalidatesTags: ["Product", "AdminProducts"],
+    }),
+    uploadProductImages: builder.mutation({
+      query({ id, body }) {
+        return {
+          url: `/admin/products/${id}/upload_images`,
+          method: "PUT",
+          body,
+        };
+      },
+      invalidatesTags: ["Product"],
+    }),
+    deleteProductImage: builder.mutation({
+      query({ id, body }) {
+        return {
+          url: `/admin/products/${id}/delete_image`,
+          method: "PUT",
+          body,
+        };
+      },
+      invalidatesTags: ["Product"],
+    }),
+    deleteProduct: builder.mutation({
+      query(id) {
+        return {
+          url: `/admin/products/${id}`,
+          method: "DELETE",
+        };
+      },
+      invalidatesTags: ["AdminProducts"],
+    }),
   }),
 });
 
@@ -59,4 +112,10 @@ export const {
   useGetProductDetailsQuery,
   useSubmitReviewMutation,
   useCanUserReviewQuery,
+  useGetAdminProductsQuery,
+  useCreateProductMutation,
+  useUpdateProductMutation,
+  useUploadProductImagesMutation,
+  useDeleteProductImageMutation,
+  useDeleteProductMutation,
 } = productApi;

@@ -1,10 +1,10 @@
 import { useEffect } from "react";
 import { Link, useParams } from "react-router-dom";
 
-import Loader from "../components/layouts/Loader";
+import Loader from "../layouts/Loader";
 import { toast } from "react-hot-toast";
-import MetaData from "../components/layouts/MetaData";
-import { useOrderDetailsQuery } from "../redux/api/orderApi";
+import MetaData from "../layouts/MetaData";
+import { useOrderDetailsQuery } from "../../redux/api/orderApi";
 
 const OrderDetails = () => {
   const params = useParams();
