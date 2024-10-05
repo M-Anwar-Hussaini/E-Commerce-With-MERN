@@ -130,3 +130,4 @@ dist
 .pnp.*
 **/config.env
 api/test.js
+Notes.txt
