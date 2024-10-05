@@ -1,5 +1,5 @@
-import React from "react";
 import SideMenu from "./SideMenu";
+import PropTypes from "prop-types";
 
 const AdminLayout = ({ children }) => {
   const menuItems = [
@@ -49,6 +49,10 @@ const AdminLayout = ({ children }) => {
       </div>
     </div>
   );
+};
+
+AdminLayout.propTypes = {
+  children: PropTypes.node,
 };
 
 export default AdminLayout;
