@@ -67,6 +67,19 @@ const userApi = createApi({
     }),
     listAllUsers: builder.query({
       query: () => '/admin/users',
+      providesTags: ['User'],
+    }),
+    updateUser: builder.mutation({
+      query: ({ id, body }) => ({
+        url: `/admin/users/${id}`,
+        method: 'PUT',
+        body,
+      }),
+
+      invalidatesTags: ['User'],
+    }),
+    getUserDetails: builder.query({
+      query: (id) => `/admin/users/${id}`,
     }),
   }),
 });
@@ -79,5 +92,7 @@ export const {
   useForgotPasswordMutation,
   useResetPasswordMutation,
   useListAllUsersQuery,
+  useUpdateUserMutation,
+  useGetUserDetailsQuery,
 } = userApi;
 export default userApi;
