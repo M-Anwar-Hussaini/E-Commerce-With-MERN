@@ -34,6 +34,7 @@ export const orderApi = createApi({
     }),
     adminOrderList: builder.query({
       query: () => `/admin/orders`,
+      providesTags: ['Orders'],
     }),
     updateOrder: builder.mutation({
       query({ body, id }) {
@@ -43,6 +44,13 @@ export const orderApi = createApi({
           body,
         };
       },
+      invalidatesTags: ['Orders'],
+    }),
+    deleteOrder: builder.mutation({
+      query: (id) => ({
+        url: `/admin/orders/${id}`,
+        method: 'DELETE',
+      }),
       invalidatesTags: ['Orders'],
     }),
   }),
@@ -56,4 +64,5 @@ export const {
   useLazyGetDashboardSalesQuery,
   useAdminOrderListQuery,
   useUpdateOrderMutation,
+  useDeleteOrderMutation,
 } = orderApi;
