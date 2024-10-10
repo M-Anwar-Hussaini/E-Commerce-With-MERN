@@ -19,7 +19,7 @@ const ProtectedRoute = ({ admin, children }) => {
 };
 ProtectedRoute.propTypes = {
   children: PropTypes.node,
-  admin: PropTypes.any,
+  admin: PropTypes.bool,
 };
 
 export default ProtectedRoute;
