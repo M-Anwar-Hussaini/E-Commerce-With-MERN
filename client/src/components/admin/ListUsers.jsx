@@ -6,28 +6,35 @@ import { Link } from 'react-router-dom';
 import MetaData from '../layouts/MetaData';
 
 import AdminLayout from '../layouts/AdminLayout';
-import { useListAllUsersQuery } from '../../redux/api/userApi';
+import {
+  useDeleteUserMutation,
+  useListAllUsersQuery,
+} from '../../redux/api/userApi';
 
 const ListUsers = () => {
   const { data, isLoading, error: listError } = useListAllUsersQuery();
+  const [
+    deleteUser,
+    { isSuccess, error: deleteError, isLoading: deleteLoading },
+  ] = useDeleteUserMutation();
 
   useEffect(() => {
     if (listError) {
       toast.error(listError?.data?.message);
     }
 
-    // if (deleteError) {
-    //   toast.error(deleteError?.data?.message);
-    // }
+    if (deleteError) {
+      toast.error(deleteError?.data?.message);
+    }
 
-    // if (isSuccess) {
-    //   toast.success('Product Deleted Successfully');
-    // }
-  }, [listError]);
+    if (isSuccess) {
+      toast.success('User deleted successfully');
+    }
+  }, [listError, deleteError, isSuccess]);
 
-  //   const deleteProductHandler = (id) => {
-  //     deleteProduct(id);
-  //   };
+  const handleDelete = (id) => {
+    deleteUser(id);
+  };
 
   const setProducts = () => {
     const users = {
@@ -65,20 +72,20 @@ const ListUsers = () => {
     data?.users?.forEach((user) => {
       users.rows.push({
         id: user?._id,
-        name: user?.name,
-        email: user?.email,
+        name: user?.name?.substring(0, Math.min(20, user?.name?.length)),
+        email: user?.email?.substring(0, Math.min(20, user?.email?.length)),
+        role: user?.role,
         actions: (
           <>
             <Link
               to={`/admin/users/${user?._id}`}
-              className="btn btn-outline-primary"
+              className="btn btn-sm btn-outline-primary"
             >
               <i className="fa fa-pencil"></i>
             </Link>
             <button
-              className="btn btn-outline-danger ms-2"
-              //   onClick={() => deleteProductHandler(product?._id)}
-              //   disabled={isDeleteLoading}
+              className="btn btn-sm btn-outline-danger ms-2"
+              onClick={() => handleDelete(user?._id)}
             >
               <i className="fa fa-trash"></i>
             </button>
@@ -90,7 +97,7 @@ const ListUsers = () => {
     return users;
   };
 
-  if (isLoading) return <Loader />;
+  if (isLoading || deleteLoading) return <Loader />;
 
   return (
     <AdminLayout>
