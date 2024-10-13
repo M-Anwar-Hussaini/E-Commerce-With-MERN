@@ -1,7 +1,10 @@
 import { useEffect, useState } from 'react';
 import AdminLayout from '../layouts/AdminLayout';
 import { MDBDataTable } from 'mdbreact';
-import { useLazyGetProductReviewsQuery } from '../../redux/api/productsApi';
+import {
+  useDeleteReviewMutation,
+  useLazyGetProductReviewsQuery,
+} from '../../redux/api/productsApi';
 import toast from 'react-hot-toast';
 import Loader from '../layouts/Loader';
 
@@ -9,18 +12,34 @@ export default function ProductReviews() {
   const [productId, setProductId] = useState('');
   const [getReviews, { isLoading, error, data }] =
     useLazyGetProductReviewsQuery();
+
+  const [
+    deleteReview,
+    { error: deleteError, isLoading: deleteLoading, isSuccess },
+  ] = useDeleteReviewMutation();
   useEffect(() => {
     if (error) {
       toast.error(error?.data?.message);
     }
   }, [error]);
+  useEffect(() => {
+    if (deleteError) {
+      toast.error(deleteError?.data?.message);
+    }
+    if (isSuccess) {
+      toast.success('Review was successfully deleted');
+    }
+  }, [deleteError, isSuccess]);
 
   const handleSubmit = (e) => {
     e.preventDefault();
     getReviews(productId);
   };
 
-  if (isLoading) {
+  const handleDelete = (revewId) => {
+    deleteReview({ productId, id: revewId });
+  };
+  if (isLoading || deleteLoading) {
     return <Loader />;
   }
 
@@ -99,7 +118,11 @@ export default function ProductReviews() {
                     user: review?.user?.name,
                     actions: (
                       <>
-                        <button className="btn btn-outline-danger ms-2">
+                        <button
+                          className="btn btn-outline-danger ms-2"
+                          onClick={() => handleDelete(review?._id)}
+                          disabled={deleteLoading}
+                        >
                           <i className="fa fa-trash"></i>
                         </button>
                       </>
