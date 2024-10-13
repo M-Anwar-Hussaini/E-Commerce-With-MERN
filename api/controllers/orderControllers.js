@@ -1,7 +1,7 @@
-import catchAsyncErrors from "../middlewares/catchAsyncErrors.js";
-import Product from "../models/productModel.js";
-import Order from "../models/orderModel.js";
-import ErrorHandler from "../utils/errorHandler.js";
+import catchAsyncErrors from '../middlewares/catchAsyncErrors.js';
+import Product from '../models/productModel.js';
+import Order from '../models/orderModel.js';
+import ErrorHandler from '../utils/errorHandler.js';
 
 // Create new Order  =>  /api/v1/orders/new
 export const newOrder = catchAsyncErrors(async (req, res) => {
@@ -46,12 +46,12 @@ export const myOrders = catchAsyncErrors(async (req, res) => {
 // Get order details  =>  /api/v1/orders/:id
 export const getOrderDetails = catchAsyncErrors(async (req, res, next) => {
   const order = await Order.findById(req.params.id).populate(
-    "user",
-    "name email"
+    'user',
+    'name email',
   );
 
   if (!order) {
-    return next(new ErrorHandler("No Order found with this ID", 404));
+    return next(new ErrorHandler('No Order found with this ID', 404));
   }
 
   res.status(200).json({
@@ -74,22 +74,30 @@ export const updateOrder = catchAsyncErrors(async (req, res, next) => {
   const order = await Order.findById(req.params.id);
 
   if (!order) {
-    return next(new ErrorHandler("No Order found with this ID", 404));
+    return next(new ErrorHandler('No Order found with this ID', 404));
   }
 
-  if (order?.orderStatus === "Delivered") {
-    return next(new ErrorHandler("You have already delivered this order", 400));
+  if (order?.orderStatus === 'Delivered') {
+    return next(new ErrorHandler('You have already delivered this order', 400));
   }
 
   // Update products stock
-  order?.orderItems?.forEach(async (item) => {
+  let productNotFound = false;
+  for (const item of order.orderItems) {
     const product = await Product.findById(item?.product?.toString());
     if (!product) {
-      return next(new ErrorHandler("No Product found with this ID", 404));
+      productNotFound = true;
+      break;
     }
     product.stock = product.stock - item.quantity;
     await product.save({ validateBeforeSave: false });
-  });
+  }
+
+  if (productNotFound) {
+    return next(
+      new ErrorHandler('No Product found with one or more ID(s)', 404),
+    );
+  }
 
   order.orderStatus = req.body.orderStatus;
   order.deliveredAt = Date.now();
@@ -106,7 +114,7 @@ export const deleteOrder = catchAsyncErrors(async (req, res, next) => {
   const order = await Order.findById(req.params.id);
 
   if (!order) {
-    return next(new ErrorHandler("No Order found with this ID", 404));
+    return next(new ErrorHandler('No Order found with this ID', 404));
   }
 
   await order.deleteOne();
@@ -131,9 +139,9 @@ async function getSalesData(startDate, endDate) {
       // Stage 2 - Group Data
       $group: {
         _id: {
-          date: { $dateToString: { format: "%Y-%m-%d", date: "$createdAt" } },
+          date: { $dateToString: { format: '%Y-%m-%d', date: '$createdAt' } },
         },
-        totalSales: { $sum: "$totalAmount" },
+        totalSales: { $sum: '$totalAmount' },
         numOrders: { $sum: 1 }, // count the number of orders
       },
     },
@@ -172,7 +180,7 @@ function getDatesBetween(startDate, endDate) {
   let currentDate = new Date(startDate);
 
   while (currentDate <= new Date(endDate)) {
-    const formattedDate = currentDate.toISOString().split("T")[0];
+    const formattedDate = currentDate.toISOString().split('T')[0];
     dates.push(formattedDate);
     currentDate.setDate(currentDate.getDate() + 1);
   }
@@ -181,7 +189,7 @@ function getDatesBetween(startDate, endDate) {
 }
 
 // Get Sales Data  =>  /api/v1/admin/get_sales
-export const getSales = catchAsyncErrors(async (req, res, next) => {
+export const getSales = catchAsyncErrors(async (req, res) => {
   const startDate = new Date(req.query.startDate);
   const endDate = new Date(req.query.endDate);
 
@@ -190,7 +198,7 @@ export const getSales = catchAsyncErrors(async (req, res, next) => {
 
   const { salesData, totalSales, totalNumOrders } = await getSalesData(
     startDate,
-    endDate
+    endDate,
   );
 
   res.status(200).json({

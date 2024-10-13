@@ -1,9 +1,9 @@
-import Product from "../models/productModel.js";
-import ErrorHandler from "../utils/errorHandler.js";
-import catchcAsync from "../middlewares/catchAsyncErrors.js";
-import APIFilters from "../utils/apiFilters.js";
-import Order from "../models/orderModel.js";
-import {delete_file, upload_file} from "../utils/cloudinary.js";
+import Product from '../models/productModel.js';
+import ErrorHandler from '../utils/errorHandler.js';
+import catchcAsync from '../middlewares/catchAsyncErrors.js';
+import APIFilters from '../utils/apiFilters.js';
+import Order from '../models/orderModel.js';
+import { delete_file, upload_file } from '../utils/cloudinary.js';
 
 // Get all products => /api/v1/products
 export const getProducts = catchcAsync(async (req, res) => {
@@ -34,11 +34,11 @@ export const newProduct = catchcAsync(async (req, res) => {
 // Get single product details => /api/v1/products/:id
 export const getProductDetails = catchcAsync(async (req, res, next) => {
   const product = await Product.findById(req.params?.id).populate(
-    "reviews.user"
+    'reviews.user',
   );
 
   if (!product) {
-    return next(new ErrorHandler("Product not found", 404));
+    return next(new ErrorHandler('Product not found', 404));
   }
   res.status(200).json({
     product,
@@ -58,7 +58,7 @@ export const getAdminProducts = catchcAsync(async (req, res) => {
 export const updateProduct = catchcAsync(async (req, res, next) => {
   let product = await Product.findById(req.params?.id);
   if (!product) {
-    return next(new ErrorHandler("Product not found", 404));
+    return next(new ErrorHandler('Product not found', 404));
   }
 
   product = await Product.findByIdAndUpdate(req.params.id, req.body, {
@@ -74,10 +74,10 @@ export const uploadProductImages = catchcAsync(async (req, res, next) => {
   let product = await Product.findById(req?.params?.id);
 
   if (!product) {
-    return next(new ErrorHandler("Product not found", 404));
+    return next(new ErrorHandler('Product not found', 404));
   }
 
-  const uploader = async (image) => upload_file(image, "shopit/products");
+  const uploader = async (image) => upload_file(image, 'shopit/products');
 
   const urls = await Promise.all((req?.body?.images).map(uploader));
 
@@ -94,14 +94,14 @@ export const deleteProductImage = catchcAsync(async (req, res, next) => {
   let product = await Product.findById(req?.params?.id);
 
   if (!product) {
-    return next(new ErrorHandler("Product not found", 404));
+    return next(new ErrorHandler('Product not found', 404));
   }
 
   const isDeleted = await delete_file(req.body.imgId);
 
   if (isDeleted) {
     product.images = product?.images?.filter(
-      (img) => img.public_id !== req.body.imgId
+      (img) => img.public_id !== req.body.imgId,
     );
 
     await product?.save();
@@ -116,18 +116,18 @@ export const deleteProductImage = catchcAsync(async (req, res, next) => {
 export const deleteProduct = catchcAsync(async (req, res, next) => {
   const product = await Product.findById(req.params?.id);
   if (!product) {
-    return next(new ErrorHandler("Product not found", 404));
+    return next(new ErrorHandler('Product not found', 404));
   }
 
   // Deleting image associated with product
   for (let i = 0; i < product?.images?.length; i++) {
     await delete_file(product?.images[i].public_id);
   }
-  
+
   await Product.findByIdAndDelete(req.params.id);
 
   res.status(200).json({
-    message: "Product deleted successfully",
+    message: 'Product deleted successfully',
   });
 });
 
@@ -144,11 +144,11 @@ export const createProductReview = catchcAsync(async (req, res, next) => {
   const product = await Product.findById(productId);
 
   if (!product) {
-    return next(new ErrorHandler("Product not found", 404));
+    return next(new ErrorHandler('Product not found', 404));
   }
 
   const isReviewed = product?.reviews?.find(
-    (r) => r.user.toString() === req?.user?._id.toString()
+    (r) => r.user.toString() === req?.user?._id.toString(),
   );
 
   if (isReviewed) {
@@ -176,10 +176,10 @@ export const createProductReview = catchcAsync(async (req, res, next) => {
 
 // Get product reviews => /api/v1/reviews
 export const getProductReviews = catchcAsync(async (req, res, next) => {
-  const product = await Product.findById(req.query.id);
+  const product = await Product.findById(req.query.id).populate('reviews.user');
 
   if (!product) {
-    return next(new ErrorHandler("Product not found", 404));
+    return next(new ErrorHandler('Product not found', 404));
   }
 
   res.status(200).json({
@@ -192,11 +192,11 @@ export const deleteReview = catchcAsync(async (req, res, next) => {
   let product = await Product.findById(req.query.productId);
 
   if (!product) {
-    return next(new ErrorHandler("Product not found", 404));
+    return next(new ErrorHandler('Product not found', 404));
   }
 
   const reviews = product?.reviews?.filter(
-    (review) => review._id.toString() !== req?.query?.id.toString()
+    (review) => review._id.toString() !== req?.query?.id.toString(),
   );
 
   const numOfReviews = reviews.length;
@@ -210,7 +210,7 @@ export const deleteReview = catchcAsync(async (req, res, next) => {
   product = await Product.findByIdAndUpdate(
     req.query.productId,
     { reviews, ratings, numOfReviews },
-    { new: true, runValidators: true, useFindAndModify: false }
+    { new: true, runValidators: true, useFindAndModify: false },
   );
 
   res.status(200).json({
@@ -223,7 +223,7 @@ export const deleteReview = catchcAsync(async (req, res, next) => {
 export const canUserReview = catchcAsync(async (req, res) => {
   const orders = await Order.find({
     user: req.user._id,
-    "orderItems.product": req.query.productId,
+    'orderItems.product': req.query.productId,
   });
 
   if (orders.length === 0) {
@@ -233,7 +233,7 @@ export const canUserReview = catchcAsync(async (req, res) => {
   // Check if the user has already reviewed the product
   const product = await Product.findById(req.query.productId);
   const isReviewed = product?.reviews?.find(
-    (review) => review.user.toString() === req.user._id.toString()
+    (review) => review.user.toString() === req.user._id.toString(),
   );
 
   if (isReviewed) {
