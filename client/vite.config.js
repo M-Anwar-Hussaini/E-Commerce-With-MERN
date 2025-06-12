@@ -7,7 +7,7 @@ export default defineConfig({
   server: {
     proxy: {
       "/api": {
-        target: "https://e-commerce-with-mern-5t80.onrender.com",
+        target: "http://localhost:8000",
         changeOrigin: true,
         secure: false,
       },
